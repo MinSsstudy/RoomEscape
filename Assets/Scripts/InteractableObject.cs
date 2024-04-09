@@ -36,8 +36,17 @@ public class InteractableObject : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            //Ray ray = ;
-            ZoomIn();
+            var mousePos = Input.mousePosition;
+            var origin = Camera.main.ScreenToWorldPoint(mousePos);
+            var dir = Camera.main.transform.forward;
+            Ray ray = new Ray(origin, dir);
+            RaycastHit hit;
+
+            Physics.Raycast(ray, out hit, Camera.main.farClipPlane);
+            if (hit.collider == collider)
+            {
+                ZoomIn();
+            }
         }
     }
 
