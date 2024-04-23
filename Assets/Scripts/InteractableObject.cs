@@ -15,14 +15,46 @@ public class InteractableObject : MonoBehaviour
     // 마우스 클릭하면 해당 오브젝트 방향으로 카메라 확대되거나,
     // 대화 UI를 보여줌
 
-    [SerializeField] private Vector3 cameraZoomPos;
-    [SerializeField] private int cameraZoomSize = 6;
-    Collider collider;
-
-
-    private void Start()
+    // 어트리뷰트 문법
+    [SerializeField] protected ItemData itemData;
+    public ItemData Item
     {
-        collider = GetComponent<Collider>();
+        get
+        {
+            return itemData;
+        }
+    }
+    [SerializeField] protected Vector3 cameraZoomPos;
+    public Vector3 CameraZoomPos
+    {
+        get
+        {
+            return cameraZoomPos;
+        }
+    }
+    [SerializeField] protected float cameraZoomSize = 6f;
+    public float CameraZoomSize
+    {
+        get
+        {
+            return cameraZoomSize;
+        }
+    }
+
+    // Upcasting : 부모 클래스로 호출
+    //            예) BoxCollider, SphereCollider -> Collider 
+    // Downcasting : 자식 클래스로 형변환
+    //            예 ) (BoxCollider)collider
+
+
+    protected void Start()
+    {
+        /*
+        if (cameraCtr == null)
+        {
+            cameraCtr = FindObjectOfType<CameraController>();
+        }*/
+        //collider = GetComponent<Collider>();
 
         //TestClass t = new TestClass();
         //t.Test();
@@ -31,29 +63,4 @@ public class InteractableObject : MonoBehaviour
         //GameObject g = new GameObject(); 유니티에서 권장하지 X
         //Instantiate(gameObject); 유니티에서 권장
     }
-
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            var mousePos = Input.mousePosition;
-            var origin = Camera.main.ScreenToWorldPoint(mousePos);
-            var dir = Camera.main.transform.forward;
-            Ray ray = new Ray(origin, dir);
-            RaycastHit hit;
-
-            Physics.Raycast(ray, out hit, Camera.main.farClipPlane);
-            if (hit.collider == collider)
-            {
-                ZoomIn();
-            }
-        }
-    }
-
-    void ZoomIn()
-    {
-        Camera.main.transform.position = cameraZoomPos;
-        Camera.main.orthographicSize = cameraZoomSize;
-    }
-
 }
