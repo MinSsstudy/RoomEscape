@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 418d67e152353e74fbd30cef5693e528, type: 3}
-  m_Name: Item_03
+  m_Name: Item_Books
   m_EditorClassIdentifier: 
-  itemName: "\uCC45"
-  descrition: "\uCC45\uCC45\uCC45"
+  itemName: "\uC5EC\uB7EC \uAD8C\uC758 \uCC45"
+  descrition: "\uC54C \uC218 \uC5C6\uB294 \uC5B8\uC5B4\uB85C \uC801\uD78C \uCC45\uB4E4\uC774
+    \uAF42\uD600\uC788\uB2E4."
   isOwnable: 1
-  ownableNumber: 1
+  ownableNumber: 3

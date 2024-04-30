@@ -16,14 +16,6 @@ public class InteractableObject : MonoBehaviour
     // 대화 UI를 보여줌
 
     // 어트리뷰트 문법
-    [SerializeField] protected ItemData itemData;
-    public ItemData Item
-    {
-        get
-        {
-            return itemData;
-        }
-    }
     [SerializeField] protected Vector3 cameraZoomPos;
     public Vector3 CameraZoomPos
     {
@@ -41,26 +33,24 @@ public class InteractableObject : MonoBehaviour
         }
     }
 
+    protected Collider collider;
     // Upcasting : 부모 클래스로 호출
     //            예) BoxCollider, SphereCollider -> Collider 
     // Downcasting : 자식 클래스로 형변환
     //            예 ) (BoxCollider)collider
 
 
-    protected void Start()
+    protected virtual void Start()
     {
-        /*
-        if (cameraCtr == null)
-        {
-            cameraCtr = FindObjectOfType<CameraController>();
-        }*/
-        //collider = GetComponent<Collider>();
-
-        //TestClass t = new TestClass();
-        //t.Test();
+        collider = GetComponent<Collider>();
 
         // 게임오브젝트 인스턴스 생성하는 방법
         //GameObject g = new GameObject(); 유니티에서 권장하지 X
         //Instantiate(gameObject); 유니티에서 권장
+    }
+
+    public void TurnOnCollider(bool isOn)
+    {
+        collider.enabled = isOn;
     }
 }
