@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: "\uC120\uBC18"
   descrition: "\uC120\uBC18\uC5D0 \uC5EC\uB7EC \uC544\uC774\uD15C\uC774 \uB193\uC5EC\uC788\uB2E4."
+  icon: {fileID: 21300000, guid: 4f0ff3f74d230e0448e9566bb08f20ca, type: 3}
+  isOwnable: 0
+  ownableNumber: 0

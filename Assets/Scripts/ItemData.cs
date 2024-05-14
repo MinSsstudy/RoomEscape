@@ -25,6 +25,15 @@ public class ItemData : ScriptableObject
         }
     }
 
+    [SerializeField] Sprite icon;
+    public Sprite Icon
+    {
+        get
+        {
+            return icon;
+        }
+    }
+
     [SerializeField] bool isOwnable = false;
     public bool IsOwnable
     {

@@ -7,6 +7,10 @@ public class Inventory
 {
     // 소지한 아이템과 개수를 저장
     Dictionary<ItemData, int> inven;
+    public Dictionary<ItemData, int> Items
+    {
+        get { return inven; }
+    }
 
 
     public Inventory()

@@ -10,13 +10,12 @@ public enum CameraView
     ItemView
 }
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoSingleton<GameManager>
 {
-    public static GameManager Instance;
-
     [SerializeField] CameraController cameraCtr;
     [SerializeField] GameObject uiFurnitureView;
     [SerializeField] UIItemDescription uiItemDescription;
+    [SerializeField] UIInventory uiInventory;
 
     CameraView curView = CameraView.RoomView;
     InteractableObject curFurniture;
@@ -24,17 +23,9 @@ public class GameManager : MonoBehaviour
     Inventory inventory;
 
 
-    private void Awake()
+    protected override void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        base.Awake();
 
         inventory = new Inventory();
     }
@@ -92,6 +83,7 @@ public class GameManager : MonoBehaviour
                     {
                         itemObj.TakeItem();
                         inventory.InsertItem(itemObj.Item);
+                        uiInventory.UpdateIventory(inventory);
                     }
                 }
                 break;
