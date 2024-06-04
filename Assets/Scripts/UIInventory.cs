@@ -9,10 +9,9 @@ public class UIInventory : MonoBehaviour
     [SerializeField] GameObject itemSlotPrefab;
 
 
-    public void UpdateIventory(Inventory inventory)
+    public void UpdateInventory(Inventory inventory)
     {
         int slotsNum = scrollRect.content.childCount;
-        Debug.Log($"slotsNum : {slotsNum}");
         for(int i = 0; i < slotsNum; i++)
         {
             Destroy(scrollRect.content.GetChild(0).gameObject);

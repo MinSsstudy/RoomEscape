@@ -1,33 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
-
-public enum CameraView
-{
-    RoomView,
-    FurnitureView,
-    ItemView
-}
 
 public class GameManager : MonoSingleton<GameManager>
 {
     [SerializeField] CameraController cameraCtr;
-    [SerializeField] GameObject uiFurnitureView;
-    [SerializeField] UIItemDescription uiItemDescription;
-    [SerializeField] UIInventory uiInventory;
 
-    CameraView curView = CameraView.RoomView;
-    InteractableObject curFurniture;
-
-    Inventory inventory;
+    Stack<ScreenOrder> prevOrders;
+    ScreenOrder curOrder;
 
 
     protected override void Awake()
     {
         base.Awake();
 
-        inventory = new Inventory();
+        prevOrders = new Stack<ScreenOrder>();
+        curOrder = new ScreenOrder(ViewType.RoomView);
     }
 
     private void Update()
@@ -44,71 +32,63 @@ public class GameManager : MonoSingleton<GameManager>
             Physics.Raycast(ray, out hit, Camera.main.farClipPlane);
             if (hit.collider != null)
             {
-                ShowView(hit.collider.gameObject);
+                var interactObj
+                    = hit.collider.GetComponent<InteractableObject>();
+                if (interactObj != null)
+                {
+                    interactObj.Interact();
+
+                    prevOrders.Push(curOrder);
+                    curOrder = new ScreenOrder(interactObj);
+                    ShowView(curOrder);
+                }
             }
         }
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            HideItemDescrition();
+            GoBack();
         }
     }
 
-    void ShowView(GameObject colliderObject)
+    void ShowView(ScreenOrder order)
     {
-        switch(curView)
+        if (order.cameraView == ViewType.RoomView)
         {
-            case CameraView.RoomView:
-                var interactObj
-                    = colliderObject.GetComponent<InteractableObject>();
-                if (interactObj != null)
-                {
-                    curView = CameraView.FurnitureView;
-                    cameraCtr.ZoomIn(interactObj);
-                    uiFurnitureView.SetActive(true);
-                    curFurniture = interactObj;
-                    curFurniture.TurnOnCollider(false);
-                }
-                break;
-
-            case CameraView.FurnitureView:
-            case CameraView.ItemView:
-                var itemObj = colliderObject.GetComponent<ItemObject>();
-                if (itemObj != null)
-                {
-                    curView = CameraView.ItemView;
-                    cameraCtr.ZoomIn(itemObj);
-                    ShowItemDescrition(itemObj.Item.Descrition);
-                    if (itemObj.Item.IsOwnable)
-                    {
-                        itemObj.TakeItem();
-                        inventory.InsertItem(itemObj.Item);
-                        uiInventory.UpdateIventory(inventory);
-                    }
-                }
-                break;
+            cameraCtr.ZoomOut();
         }
+        else
+        {
+            cameraCtr.ZoomIn(order.focusingObject);
+            order.focusingObject.SwitchCollider(false);
+        }
+
+        UIManager.Instance.ShowScreenUI(order);
     }
 
-    public void ShowItemDescrition(string descrition)
+    public void GoBack()
     {
-        uiFurnitureView.SetActive(false);
-        uiItemDescription.gameObject.SetActive(true);
-        uiItemDescription.ShowDescription(descrition);
-    }
+        if (curOrder.cameraView != ViewType.RoomView)
+            curOrder.focusingObject.SwitchCollider(true);
 
-    public void HideItemDescrition()
-    {
-        GoBackRoom();
-        uiItemDescription.gameObject.SetActive(false);
+        if (prevOrders.Count > 0)
+            curOrder = prevOrders.Pop();
+        else
+            curOrder = new ScreenOrder(ViewType.RoomView);
+
+        ShowView(curOrder);
     }
 
     public void GoBackRoom()
     {
-        cameraCtr.ZoomOut();
-        uiFurnitureView.SetActive(false);
-        curView = CameraView.RoomView;
-        curFurniture.TurnOnCollider(true);
-        curFurniture = null;
+        for (int i = prevOrders.Count; i > 0; --i)
+        {
+            var order = prevOrders.Pop();
+            if (order.cameraView != ViewType.RoomView)
+                order.focusingObject.SwitchCollider(true);
+        }
+
+        curOrder = new ScreenOrder(ViewType.RoomView);
+        ShowView(curOrder);
     }
 }

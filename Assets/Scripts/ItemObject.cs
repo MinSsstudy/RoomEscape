@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemObject : InteractableObject
@@ -14,12 +13,12 @@ public class ItemObject : InteractableObject
         }
     }
 
-    int curNumber;
-    public int CurNumber
+    int numOfItem;
+    public int NumberOfItem
     {
         get
         {
-            return curNumber;
+            return numOfItem;
         }
     }
 
@@ -31,15 +30,24 @@ public class ItemObject : InteractableObject
     {
         base.Start();
 
-        curNumber = itemData.OwnableNumber;
+        numOfItem = itemData.OwnableNumber;
     }
 
-    public void TakeItem()
+    public override void Interact()
     {
-        if (curNumber > 0)
+        if (Item.IsOwnable)
         {
-            curNumber--;
-            meshFilter.mesh = meshes[curNumber];
+            TakeItem();
+            PlayerData.Instance.inventory.InsertItem(Item);
+        }
+    }
+
+    void TakeItem()
+    {
+        if (numOfItem > 0)
+        {
+            numOfItem--;
+            meshFilter.mesh = meshes[numOfItem];
         }
     }
 }

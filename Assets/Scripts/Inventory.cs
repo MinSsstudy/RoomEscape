@@ -12,7 +12,6 @@ public class Inventory
         get { return inven; }
     }
 
-
     public Inventory()
     {
         inven = new Dictionary<ItemData, int>();
@@ -27,6 +26,7 @@ public class Inventory
             if (inven[item] < item.OwnableNumber)
             {
                 inven[item] += 1;
+                UIManager.Instance.InvenUI.UpdateInventory(this);
                 return true;
             }
             else
@@ -35,6 +35,7 @@ public class Inventory
         else
         {
             inven.Add(item, 1);
+            UIManager.Instance.InvenUI.UpdateInventory(this);
             return true;
         }
     }
@@ -50,5 +51,7 @@ public class Inventory
                 inven.Remove(item);
             }
         }
+
+        UIManager.Instance.InvenUI.UpdateInventory(this);
     }
 }
